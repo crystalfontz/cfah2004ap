@@ -1,12 +1,12 @@
 //===========================================================================
 //
-//  written for Seeeduino v4.2 runnung at 3.3v
+//  Written for Seeeduino v4.2 runnung at 5v
 //
 //  CRYSTALFONTZ CFAH2004AP 20x4 Character in SPI mode
 //
 //  ref: https://www.crystalfontz.com/product/CFAH2004AP
 //
-//  2017-09-26 Max / Crystalfontz
+//  2017-10-09 Max / Crystalfontz
 //===========================================================================
 //  This is free and unencumbered software released into the public domain.
 //
@@ -65,15 +65,13 @@
 #define CLR_SCK   (PORTB &= ~(0x20))
 #define SET_SCK   (PORTB |=  (0x20))
 
-//                //00000000001111111111
-// 								//01234567890123456789
+//                  //00000000001111111111
+//                  //01234567890123456789
 uint8_t MSG1[20]    ="**  CRYSTALFONTZ  **";
 uint8_t MSG2[20]    ="** CFAH2004AP-TMI **";
 uint8_t MSG3_1[20]  ="**  20 Characters **";
 uint8_t MSG3_2[20]  ="** 8  CUSTOM CHAR **";
 uint8_t MSG4[20]    ="**   by 4 lines   **";
-uint8_t CGRAM1[8]   ={0x04,0x0E,0x15,0x04,0x04,0x04,0x04,0x04,}; //UP ARROW
-uint8_t CGRAM2[8]   ={0x04,0x04,0x04,0x04,0x04,0x15,0x0e,0x04,}; //DOWN ARROW
 
 uint8_t CGRAM[8][8] = {
   {21, 42, 21, 42, 21, 42, 21, 42},
@@ -90,6 +88,7 @@ void writeCommand(uint8_t command);
 void writeData(uint8_t data);
 void writeString(uint8_t count, uint8_t *MSG);
 void Initialize_CFAH2004AP(void);
+void Initialize_CGRAM(void);
 //============================================================================
 void writeCommand(uint8_t command)
 {
@@ -191,8 +190,8 @@ void setup( void )
   SPI.begin();
   //Bump the clock to 8MHz. Appears to be the maximum.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
-
-  //Fire up the SPI OLED
+  
+    //Fire up the SPI OLED
   Serial.println(F("Initialize_CFAH2004AP()"));
   Initialize_CFAH2004AP();
   Initialize_CGRAM();
