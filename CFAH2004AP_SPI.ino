@@ -4,13 +4,14 @@
 //
 //  CRYSTALFONTZ CFAH2004AP 20x4 Character in SPI mode
 //
-//  ref: https://www.crystalfontz.com/product/CFAH2004AP
+//  ref: https://www.crystalfontz.com/product/cfah2004aptmiew
 //
 //  2017-10-09 Max / Crystalfontz
+//  2021-09-09 Kelsey Zaches
 //===========================================================================
 //  This is free and unencumbered software released into the public domain.
 //
-//  AnyLINE_ONE is free to copy, modify, publish, use, compile, sell, or
+//  Anyone is free to copy, modify, publish, use, compile, sell, or
 //  distribute this software, either in source form or as a compiled
 //  binary, for any purpose, commercial or non-commercial, and by any
 //  means.
@@ -35,7 +36,7 @@
 //===========================================================================
 #include <SPI.h>
 //----------------------------------------------------------------------------
-#define Cword 0x14  //20
+#define Cword       0x14  //20
 #define LINE_ONE    0x80  // DD RAM Address The starting position of the first line is 0x00
                           // set the DD RAM address to 0x80 + 0x00 = 0x80
 #define LINE_TWO    0xc0  // DD RAM Address The starting position of the second line is 0x40
@@ -48,13 +49,11 @@
 // LCD SPI & control lines
 //   ARD      | Port | LCD
 // -----------+------+-------------------------
-//  #7/D7     |  PD7 | SD_CS
 //  #8/D8     |  PB0 | LCD_RS
-//  #9/D9     |  PB1 | LCD_RESET
-// #10/D10    |  PB2 | LCD_CS_NOT (or SPI SS)
-// #11/D11    |  PB3 | LCD_MOSI   (hardware SPI)
+// #10/D10    |  PB2 | LCD_CSB (or SPI SS)
+// #11/D11    |  PB3 | LCD_SID   (MOSI - hardware SPI)
 // #12/D12    |  PB4 | not used   (would be MISO)
-// #13/D13    |  PB5 | LCD_SCK    (hardware SPI)
+// #13/D13    |  PB5 | LCD_SCLK    (hardware SPI)
 
 #define CLR_RS    (PORTB &= ~(0x01))
 #define SET_RS    (PORTB |=  (0x01))
@@ -160,20 +159,8 @@ void Initialize_CGRAM(void)
 //============================================================================
 void setup( void )
 {
-  // LCD SPI & control lines
-  //   ARD      | Port | LCD
-  // -----------+------+-------------------------
-  //  #7/D7     |  PD7 | SD_CS
-  //  #8/D8     |  PB0 | LCD_RS
-  //  #9/D9     |  PB1 | LCD_RESET
-  // #10/D10    |  PB2 | LCD_CS_NOT (or SPI SS)
-  // #11/D11    |  PB3 | LCD_MOSI   (hardware SPI)
-  // #12/D12    |  PB4 | not used   (would be MISO)
-  // #13/D13    |  PB5 | LCD_SCK    (hardware SPI)
-  // #23/D14/A0 |  PC0 | Touch XL   (only used on TS modules)
-  // #24/D15/A1 |  PC1 | Touch XR   (only used on TS modules)
-  // #25/D16/A2 |  PC2 | Touch YD   (only used on TS modules)
-  // #26/D17/A3 |  PC3 | Touch YU   (only used on TS modules)
+
+
   DDRB |= 0x2F;
 
   //Drive the ports to a reasonable starting state.
@@ -191,7 +178,7 @@ void setup( void )
   //Bump the clock to 8MHz. Appears to be the maximum.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
   
-    //Fire up the SPI OLED
+    //Fire up the SPI 
   Serial.println(F("Initialize_CFAH2004AP()"));
   Initialize_CFAH2004AP();
   Initialize_CGRAM();
